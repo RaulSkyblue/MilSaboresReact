@@ -1,0 +1,73 @@
+/* === 💎 Estilo Claro, Brillante y Tecnológico - navBar.css === */
+:root {
+  --color-primary: #0d6efd; /* Bootstrap primary-ish */
+  --bg-light: rgba(255,255,255,0.95);
+  --text-dark: #1f2937;
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.08);
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Navbar: make compatible with Bootstrap markup (.navbar) */
+.navbar {
+  /* part of header flow, not fixed */
+  width: 100%;
+  background: var(--bg-light);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  box-shadow: var(--shadow-sm);
+  padding: 0.125rem 0.4rem;
+  display: flex;
+  align-items: center;
+  min-height: 36px; /* further reduced height to make navbar slimmer */
+  max-width: 800px; /* constrain width so navbar appears narrower and centered */
+  margin: 0 auto; /* center within header */
+}
+
+.navbar-brand {
+  font-weight: 600;
+  color: var(--color-primary) !important;
+}
+
+.navbar .nav-link {
+  color: var(--text-dark) !important;
+  padding: 0.25rem 0.5rem; /* compact link padding */
+  line-height: 1;
+}
+.navbar .nav-link:hover {
+  color: var(--color-primary) !important;
+}
+
+.form-inline .form-control {
+  width: 200px;
+}
+
+/* Make sure collapse content aligns vertically inside fixed-height navbar */
+.navbar .navbar-collapse {
+  display: flex;
+  align-items: center;
+}
+
+.nav-item + .nav-item {
+  margin-left: 0.4rem;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0.5rem;
+    min-height: auto; /* allow taller navbar for stacked items on small screens */
+    align-items: stretch;
+    max-width: none; /* allow full width on small screens */
+    margin: 0; /* occupy full width */
+  }
+  .form-inline .form-control {
+    width: 100%;
+  }
+  .navbar-collapse {
+    margin-top: 0.5rem;
+  }
+}
+
+/* When navbar is in normal flow, reduce top margin for content to account for header height */
+main, .app-content {
+  margin-top: 16px;
+}
