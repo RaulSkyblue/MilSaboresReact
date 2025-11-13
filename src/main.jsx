@@ -10,15 +10,29 @@ import Contacto from './contacto.jsx'
 import './app.css'
 import Login from './login.jsx'
 import logo from '../logo.png'
+import Footer from './footer.jsx'
 
 function Main() {
     const [tab, setTab] = useState('home');
+    const [category, setCategory] = useState('');
 
     // Cambia la pestaña activa al hacer click en el navbar (hash)
     useEffect(() => {
         const onHashChange = () => {
-            const hash = window.location.hash.replace('#', '');
-            setTab(hash || 'home');
+            const raw = window.location.hash.replace(/^#/, '');
+            if (!raw) {
+                setTab('home');
+                setCategory('');
+                return;
+            }
+            const [base, ...rest] = raw.split('/');
+            if (base === 'productos') {
+                setTab('productos');
+                setCategory(rest.join('/') || '');
+            } else {
+                setTab(base || 'home');
+                setCategory('');
+            }
         };
         window.addEventListener('hashchange', onHashChange);
         onHashChange();
@@ -34,10 +48,11 @@ function Main() {
                     <NavBar />
                 </header>
                 {tab === 'home' && <Home />}
-                {tab === 'productos' && <Productos />}
+                {tab === 'productos' && <Productos category={category} />}
                 {tab === 'carrito' && <Carrito />}
                 {tab === 'contacto' && <Contacto />}
                 {tab === 'login' && <Login />}
+                <Footer />
             </>
         );
 }
