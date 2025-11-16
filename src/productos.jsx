@@ -1,16 +1,17 @@
 import './index.css'
 import { useState, useEffect } from 'react'
-import { fetchProductos } from './services/api' // <-- ruta corregida
+import { fetchProductos } from './services/api'
+import { agregarAlCarrito as agregarAlCarritoAPI } from './services/carritoApi'
 
 export default function Productos() {
   const [PRODUCTS, setPRODUCTS] = useState([])
   const [filtro, setFiltro] = useState("")
   const [cantidades, setCantidades] = useState({})
   const [tamanos, setTamanos] = useState({})
-  const [carrito, setCarrito] = useState([])
   const [mensaje, setMensaje] = useState("")
+  const [error, setError] = useState("")
 
-  // ← CARGA DE PRODUCTOS DESDE EL BACKEND
+  // CARGA DE PRODUCTOS DESDE EL BACKEND
   useEffect(() => {
     fetchProductos().then(data => setPRODUCTS(data))
   }, [])
@@ -27,15 +28,39 @@ export default function Productos() {
     setTamanos(prev => ({ ...prev, [code]: tamano }))
   }
 
-  const agregarCarrito = (product) => {
-    const [code] = product
+  const agregarCarrito = async (product) => {
+    const [code, category, name, price, image] = product
     const cantidad = cantidades[code] || 1
     const tamano = tamanos[code] || "Mediana"
 
-    setCarrito(prev => [...prev, { product, cantidad, tamano }])
+    // TODO: Obtener el ID del usuario logueado
+    // Por ahora usamos un ID fijo para pruebas
+    const usuarioId = 1
 
-    setMensaje(`✓ ${product[2]} (${tamano}) agregado al carrito`)
-    setTimeout(() => setMensaje(""), 2000)
+    try {
+      const item = {
+        usuarioId: usuarioId,
+        productoCode: code,
+        productoNombre: name,
+        productoCategoria: category,
+        productoPrecio: price,
+        productoImagen: image,
+        tamano: tamano,
+        cantidad: cantidad
+      }
+
+      await agregarAlCarritoAPI(item)
+
+      setMensaje(`✓ ${name} (${tamano}) agregado al carrito`)
+      setError("")
+      setTimeout(() => setMensaje(""), 3000)
+      
+      // Resetear cantidad a 1 después de agregar
+      setCantidades(prev => ({ ...prev, [code]: 1 }))
+    } catch (err) {
+      setError('Error al agregar al carrito. Por favor intenta de nuevo.')
+      setTimeout(() => setError(""), 3000)
+    }
   }
 
   const productosFiltrados = filtro
@@ -46,7 +71,7 @@ export default function Productos() {
     <section id="productos" className="container app-content">
       <div className="py-3">
         <h2>Productos</h2>
-        <p>Catálogo — selecciona un producto para ver más detalles.</p>
+        <p>Catálogo – selecciona un producto para ver más detalles.</p>
 
         <select
           className="product-filter"
@@ -60,6 +85,7 @@ export default function Productos() {
       </div>
 
       {mensaje && <div className="alert-success">{mensaje}</div>}
+      {error && <div className="alert-error">{error}</div>}
 
       <div className="products-grid">
         {productosFiltrados.map(([code, category, name, price, image]) => (
