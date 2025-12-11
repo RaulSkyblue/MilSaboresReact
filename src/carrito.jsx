@@ -1,7 +1,7 @@
 import './index.css'
 import { useState, useEffect } from 'react'
 import { obtenerCarrito, actualizarCantidad, eliminarItem, vaciarCarrito } from './services/carritoApi'
-
+//
 export default function Carrito() {
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
