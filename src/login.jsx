@@ -9,7 +9,7 @@ function validateEmail(email) {
 function validateRut(rut) {
   return /^\d{7,8}-[\dKk]$/.test(rut)
 }
-///////////
+/////////////
 export default function Login() {
   const [form, setForm] = useState({
     nombre: '',
